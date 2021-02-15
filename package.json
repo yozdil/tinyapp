@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/yozdil/tinyapp/issues"
   },
-  "homepage": "https://github.com/yozdil/tinyapp#readme"
+  "homepage": "https://github.com/yozdil/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
