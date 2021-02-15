@@ -30,14 +30,22 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+// POST
+app.post("/urls", (req, res) => {
+  let sURL = generateRandomString();
+  urlDatabase[sURL] = req.body.longURL; //Save body-parser value to urlDatabase
+  res.redirect(`/urls/${sURL}`); // Redirect to the created short URL.
+});
+
 // GET /urls/new route
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
-app.post("/urls", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
-  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+// Redirect /u:shortURL to the corresponding webpage
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
 });
 
 // GET /urls/:id route
