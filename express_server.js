@@ -20,7 +20,7 @@ const generateRandomString = () => {
 
 // DATABASE
 const urlDatabase = {
-  b2xVn2: "http://www.lighthouselabs.ca",
+  "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
 
@@ -41,6 +41,13 @@ app.post("/urls", (req, res) => {
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
+
+// At this point we should see cURL and our browser make redirected GET requests
+// to the longURL. We can now review our code and consider edge cases such as:
+
+// What would happen if a client requests a non-existent shortURL? What happens
+// to the urlDatabase when the server is restarted? What type of status code do
+// our redirects have? What does this status code mean?
 
 // Redirect /u:shortURL to the corresponding webpage
 app.get("/u/:shortURL", (req, res) => {
