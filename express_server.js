@@ -4,6 +4,7 @@ const PORT = 3000; // default port 8080
 
 app.set("view engine", "ejs");
 
+// DATABASE
 const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -16,22 +17,21 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-
-app.get("/", (req, res) => {
-  res.send("Hello!");
+// URLS_SHOW -- Short URLs
+app.get("/urls/:shortURL", (req, res) => {
+  const templateVars = {
+    shortURL: req.params.shortURL,
+    longURL: urlDatabase[req.params.shortURL]
+  };
+  console.log(templateVars);
+  res.render("urls_show", templateVars);
 });
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
-
-// app.get("/hello", (req, res) => {
-//   const templateVars = {greeting: 'Hello world'};
-
-//   res.render("urls_index", templateVars);
+// // JSON
+// app.get("/urls.json", (req, res) => {
+//   res.json(urlDatabase);
 // });
-
