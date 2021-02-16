@@ -64,7 +64,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[sURL];
   res.redirect("/urls");
 });
-
+// For invalid URLs render the error page (404.ejs)
 app.get("*", (req, res) => {
   // display 404
   res.status(404).render("404");
