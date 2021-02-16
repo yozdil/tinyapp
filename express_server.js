@@ -35,6 +35,7 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+// Redirection to the webpage
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   if (longURL === undefined) {
@@ -59,8 +60,12 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${sURL}`); // Redirect to the created short URL.
 });
 
+// Submit an Edit of long url for the same short url
 app.post("/urls/:shortURL", (req, res) => {
-  res.redirect(`/urls/${req.params.shortURL}`);
+  let shortURL = req.params.shortURL;
+  console.log(urlDatabase[shortURL]);
+  urlDatabase[shortURL] = req.body.longURL;
+  res.redirect(`/urls/${shortURL}`);
 });
 
 // Deletion for a given key address.
