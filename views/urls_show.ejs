@@ -22,18 +22,17 @@
         </p>
       </div>
     </div>
-    <div class="text-center">
+    <div class="card-header text-center">
       <h3>Edit</h3>
-      <div class="form-group mb-2"></div>
-      <form class="form-inline" action="/urls" method="POST">
+      <div>
+        <form class="form-inline justify-content-center" action="/urls/<%= shortURL %>" method="POST">
+          <label for="longURL">Enter a URL:</label>
+          <input class="form-control" type="text" name="longURL" placeholder="http://"
+            style="width: 300px; margin: 3em" />
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
 
-        <label for="longURL">Enter a URL:</label>
-        <input class="form-control" type="text" name="longURL" placeholder="http://"
-          style="width: 300px; margin: 3em" />
-        <button type="submit" class="btn btn-primary">Submit</button>
-
-      </form>
-    </div>
     </div>
 
 
