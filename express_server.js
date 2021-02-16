@@ -20,7 +20,7 @@ const generateRandomString = () => {
 
 // DATABASE
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
+  b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
 
@@ -28,13 +28,6 @@ const urlDatabase = {
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
-});
-
-// POST
-app.post("/urls", (req, res) => {
-  let sURL = generateRandomString();
-  urlDatabase[sURL] = req.body.longURL; //Save body-parser value to urlDatabase
-  res.redirect(`/urls/${sURL}`); // Redirect to the created short URL.
 });
 
 // GET /urls/new route
@@ -52,6 +45,9 @@ app.get("/urls/new", (req, res) => {
 // Redirect /u:shortURL to the corresponding webpage
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
+  if (longURL === undefined) {
+    res.status(404).render("404");
+  }
   res.redirect(longURL);
 });
 
@@ -64,6 +60,16 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+// POST
+app.post("/urls", (req, res) => {
+  let sURL = generateRandomString();
+  urlDatabase[sURL] = req.body.longURL; //Save body-parser value to urlDatabase
+  res.redirect(`/urls/${sURL}`); // Redirect to the created short URL.
+});
+app.get("*", (req, res) => {
+  // display 404
+  res.status(404).render("404");
+});
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
