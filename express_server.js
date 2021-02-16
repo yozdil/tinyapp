@@ -20,8 +20,8 @@ const generateRandomString = () => {
 
 // DATABASE
 const urlDatabase = {
-  b2xVn2: "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": "http://www.lighthouselabs.ca",
+  "9sm5xK": "http://www.google.com",
 };
 
 // URLS
@@ -52,16 +52,16 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-// POST
+// Creation of a new key for a given address.
 app.post("/urls", (req, res) => {
   let sURL = generateRandomString();
   urlDatabase[sURL] = req.body.longURL; //Save body-parser value to urlDatabase
   res.redirect(`/urls/${sURL}`); // Redirect to the created short URL.
 });
 
+// Deletion for a given key address.
 app.post("/urls/:shortURL/delete", (req, res) => {
-  const sURL = req.params.shortURL;
-  delete urlDatabase[sURL];
+  delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
 });
 // For invalid URLs render the error page (404.ejs)
