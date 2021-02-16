@@ -63,7 +63,6 @@ app.post("/urls", (req, res) => {
 // Submit an Edit of long url for the same short url
 app.post("/urls/:shortURL", (req, res) => {
   let shortURL = req.params.shortURL;
-  console.log(urlDatabase[shortURL]);
   urlDatabase[shortURL] = req.body.longURL;
   res.redirect(`/urls/${shortURL}`);
 });
