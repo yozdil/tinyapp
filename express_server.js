@@ -20,8 +20,8 @@ const generateRandomString = () => {
 
 // DATABASE
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com",
+  b2xVn2: "http://www.lighthouselabs.ca",
+  "9sm5xK": "http://www.google.com"
 };
 
 // URLS
@@ -57,6 +57,10 @@ app.post("/urls", (req, res) => {
   let sURL = generateRandomString();
   urlDatabase[sURL] = req.body.longURL; //Save body-parser value to urlDatabase
   res.redirect(`/urls/${sURL}`); // Redirect to the created short URL.
+});
+
+app.post("/urls/:shortURL", (req, res) => {
+  res.redirect(`/urls/${req.params.shortURL}`);
 });
 
 // Deletion for a given key address.
