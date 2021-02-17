@@ -12,7 +12,7 @@
       </div>
     </div>
     <div>
-      <% if (!username) { %>
+      <% if (!email) { %>
         <div class="d-flex flex-row">
           <form class="p-2 form-inline" action="/login" method="POST">
             <input class="form-control" type="text" name="username" placeholder="username"
@@ -26,7 +26,7 @@
         <% } else { %>
           <form class="form-inline" method="POST" action="/logout">
             <a class="nav-item nav-link inline" style="padding: 20px">Logged in as: <strong>
-                <%=username%>
+                <%=email%>
               </strong></a>
             <button type="submit" class="btn btn-outline-dark">Logout</button>
           </form>
