@@ -1,7 +1,9 @@
+const PORT = 8080;
 const express = require("express");
 const app = express();
-const PORT = 8080; // default port 8080
 // To make buffer data readable
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -72,6 +74,14 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
 });
+
+// LOGIN --> COOKIES
+app.post("/login", (req, res) => {
+  res.cookie("username", req.body.username);
+  // console.log(req.body.username); //This is to display the username provided
+  res.redirect("/urls");
+});
+
 // For invalid URLs render the error page (404.ejs)
 app.get("*", (req, res) => {
   // display 404
