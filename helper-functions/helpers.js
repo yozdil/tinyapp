@@ -10,8 +10,9 @@ const generateRandomString = () => {
 };
 
 const validate = (email, password, data) => {
-  let userObj = Object.values(data);
-  const currentUser = userObj.find((user) => user.email === email);
+  console.log(Object.values(data));
+  let userArr = Object.values(data);
+  const currentUser = userArr.find((user) => user.email === email);
   if (currentUser) {
     if (currentUser.password === password) {
       // successful login
@@ -26,4 +27,18 @@ const validate = (email, password, data) => {
   }
 };
 
-module.exports = { generateRandomString, validate };
+const createUser = (userInfo, data) => {
+  const { email, password } = userInfo;
+  const { user, error } = validate(email, password, data);
+  if (error === "email") {
+    // email doesn't exist on the database
+    let userId = generateRandomString();
+
+    userInfo.id = userId;
+    data[userId] = userInfo;
+
+    return email;
+  } else null;
+};
+
+module.exports = { generateRandomString, validate, createUser };
