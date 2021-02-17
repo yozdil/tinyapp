@@ -84,23 +84,16 @@ app.post("/urls", (req, res) => {
 
 // Registration page
 app.post("/register", (req, res) => {
-  // { 
-  //   "userRandomID": {
-  //     id: "userRandomID", 
-  //     email: "user@example.com", 
-  //     password: "purple-monkey-dinosaur"
-  //   },
-  //  "user2RandomID": {
-  //     id: "user2RandomID", 
-  //     email: "user2@example.com", 
-  //     password: "dishwasher-funk"
-  //   }
-  // }
+  let userId = generateRandomString();
+  users[userId] = {
+    id: userId,
+    email: req.body.email,
+    password: req.body.password,
+  }
 
+res.cookie("username", req.body.email);
 
-
-  
-res.send('Stuff is coming up over here!');
+res.redirect("/urls");
 });
 
 // Submit an Edit of long url for the same short url
