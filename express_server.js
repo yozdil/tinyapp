@@ -29,13 +29,13 @@ const urlDatabase = {
 // URLS
 app.get("/urls", (req, res) => {
   const templateVars = { username: req.cookies["username"], urls: urlDatabase };
-  console.log(templateVars);
   res.render("urls_index", templateVars);
 });
 
 // GET /urls/new route
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const templateVars = { username: req.cookies["username"], urls: urlDatabase };
+  res.render("urls_new", templateVars);
 });
 
 // Redirection to the webpage
