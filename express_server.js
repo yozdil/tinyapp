@@ -1,6 +1,11 @@
 const PORT = 8080;
 // Helper Functions
-const {generateRandomString} = require('./helper-functions/helpers');
+const {
+  generateRandomString,
+  message,
+  validate,
+  createUser,
+} = require("./helper-functions/helpers");
 const express = require("express");
 const app = express();
 // To make buffer data readable
@@ -16,18 +21,18 @@ const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
 };
-const users = { 
-  "userRandomID": {
-    id: "userRandomID", 
-    email: "user@example.com", 
-    password: "purple-monkey-dinosaur"
+const users = {
+  userRandomID: {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur",
   },
- "user2RandomID": {
-    id: "user2RandomID", 
-    email: "user2@example.com", 
-    password: "dishwasher-funk"
-  }
-}
+  user2RandomID: {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk",
+  },
+};
 
 // URLS
 app.get("/urls", (req, res) => {
@@ -41,22 +46,26 @@ app.get("/register", (req, res) => {
   res.render("registration", templateVars);
 });
 app.post("/register", (req, res) => {
-  let userId = generateRandomString();
-  const {email, password} = req.body;
-  users[userId] = {
-    id: userId,
-    email,
-    password,
-  }
-  if (email) { //If email is provided, later we have to verify if it exists on the database.
-    res.cookie("email", email);
-    res.redirect("/urls");
-  } else { //if no email is provided, 404!
-    res.status(400).render("404")
-  }
+  const { email, password } = req.body;
 
+  if (email) {
+    //If email is provided, later we have to verify if it exists on the database.
+    // if it exists
+    let userEmail = createUser({ email, password }, users);
+    if (userEmail) {
+      res.cookie("email", email);
+      res.redirect("/urls");
+    } else {
+      res
+        .status(400)
+        .render("400", message("This email already exists in our system!"));
+    }
+  } else {
+    res
+      .status(400)
+      .render("400", message("Please provide and email and a password!"));
+  }
 });
-
 
 // GET /urls/new route
 app.get("/urls/new", (req, res) => {
@@ -89,7 +98,6 @@ app.post("/urls", (req, res) => {
   urlDatabase[sURL] = req.body.longURL; //Save body-parser value to urlDatabase
   res.redirect(`/urls/${sURL}`); // Redirect to the created short URL.
 });
-
 
 // Submit an Edit of long url for the same short url
 app.post("/urls/:shortURL", (req, res) => {
