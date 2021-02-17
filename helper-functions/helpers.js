@@ -9,6 +9,10 @@ const generateRandomString = () => {
   return rand;
 };
 
+const message = (str) => {
+  return {"message": str };
+}
+
 const validate = (email, password, data) => {
   console.log(Object.values(data));
   let userArr = Object.values(data);
@@ -41,4 +45,4 @@ const createUser = (userInfo, data) => {
   } else null;
 };
 
-module.exports = { generateRandomString, validate, createUser };
+module.exports = { generateRandomString, message, validate, createUser };
