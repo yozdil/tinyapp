@@ -47,7 +47,6 @@ app.get("/register", (req, res) => {
 });
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
-
   if (email) {
     //If email is provided, later we have to verify if it exists on the database.
     // if it exists
@@ -66,6 +65,24 @@ app.post("/register", (req, res) => {
       .render("400", message("Please provide and email and a password!"));
   }
 });
+
+// LOGIN & LOGOUT
+app.get("/login", (req, res) => {
+  const templateVars = { email: req.cookies["email"], urls: urlDatabase };
+  res.render("login", templateVars);
+});
+app.post("/login", (req, res) => {
+  res.cookie("email", req.body.email);
+  res.redirect("/urls");
+});
+// LOGOUT
+app.post("/logout", (req, res) => {
+  res.clearCookie("email", req.body.email);
+  // console.log(req.body.username); //This is to display the username provided
+  res.redirect("/urls");
+});
+
+
 
 // GET /urls/new route
 app.get("/urls/new", (req, res) => {
@@ -109,19 +126,6 @@ app.post("/urls/:shortURL", (req, res) => {
 // Deletion for a given key address.
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
-  res.redirect("/urls");
-});
-
-// LOGIN --> COOKIES
-app.post("/login", (req, res) => {
-  res.cookie("email", req.body.email);
-  res.redirect("/urls");
-});
-
-// LOGOUT --> COOKIES
-app.post("/logout", (req, res) => {
-  res.clearCookie("email", req.body.email);
-  // console.log(req.body.username); //This is to display the username provided
   res.redirect("/urls");
 });
 
