@@ -31,19 +31,36 @@ const users = {
 
 // URLS
 app.get("/urls", (req, res) => {
-  const templateVars = { username: req.cookies["username"], urls: urlDatabase };
+  const templateVars = { email: req.cookies["email"], urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
-// Registration page
+// REGISTRATION
 app.get("/register", (req, res) => {
-  const templateVars = { username: req.cookies["username"], urls: urlDatabase };
+  const templateVars = { email: req.cookies["email"], urls: urlDatabase };
   res.render("registration", templateVars);
 });
+app.post("/register", (req, res) => {
+  let userId = generateRandomString();
+  const {email, password} = req.body;
+  users[userId] = {
+    id: userId,
+    email,
+    password,
+  }
+  if (email) { //If email is provided, later we have to verify if it exists on the database.
+    res.cookie("email", email);
+    res.redirect("/urls");
+  } else { //if no email is provided, 404!
+    res.status(400).render("404")
+  }
+
+});
+
 
 // GET /urls/new route
 app.get("/urls/new", (req, res) => {
-  const templateVars = { username: req.cookies["username"], urls: urlDatabase };
+  const templateVars = { email: req.cookies["email"], urls: urlDatabase };
   res.render("urls_new", templateVars);
 });
 
@@ -59,7 +76,7 @@ app.get("/u/:shortURL", (req, res) => {
 // GET /urls/:id route
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
-    username: req.cookies["username"],
+    email: req.cookies["email"],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
   };
@@ -73,18 +90,6 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${sURL}`); // Redirect to the created short URL.
 });
 
-// Registration page
-app.post("/register", (req, res) => {
-  let userId = generateRandomString();
-  users[userId] = {
-    id: userId,
-    email: req.body.email,
-    password: req.body.password,
-  }
-res.cookie("username", req.body.email);
-
-res.redirect("/urls");
-});
 
 // Submit an Edit of long url for the same short url
 app.post("/urls/:shortURL", (req, res) => {
@@ -101,13 +106,13 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 // LOGIN --> COOKIES
 app.post("/login", (req, res) => {
-  res.cookie("username", req.body.username);
+  res.cookie("email", req.body.email);
   res.redirect("/urls");
 });
 
 // LOGOUT --> COOKIES
 app.post("/logout", (req, res) => {
-  res.clearCookie("username", req.body.username);
+  res.clearCookie("email", req.body.email);
   // console.log(req.body.username); //This is to display the username provided
   res.redirect("/urls");
 });
