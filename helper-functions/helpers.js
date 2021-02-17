@@ -14,7 +14,6 @@ const message = (str) => {
 }
 
 const validate = (email, password, data) => {
-  console.log(Object.values(data));
   let userArr = Object.values(data);
   const currentUser = userArr.find((user) => user.email === email);
   if (currentUser) {
