@@ -1,4 +1,6 @@
 const PORT = 8080;
+// Helper Functions
+const {generateRandomString} = require('./helper-functions/helpers');
 const express = require("express");
 const app = express();
 // To make buffer data readable
@@ -6,21 +8,10 @@ const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
-
+// EJS
 app.set("view engine", "ejs");
 
-// Random short url generator to be used by long url
-const generateRandomString = () => {
-  let rand = "";
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for (let i = 0; i < 7; i++) {
-    rand += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return rand;
-};
-
-// DATABASE
+// DATABASE OF URLs and USERS
 const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
@@ -90,7 +81,6 @@ app.post("/register", (req, res) => {
     email: req.body.email,
     password: req.body.password,
   }
-
 res.cookie("username", req.body.email);
 
 res.redirect("/urls");
