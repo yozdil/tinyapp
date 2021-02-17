@@ -1,0 +1,6 @@
+{
+  "editor.tabSize": 2,
+  "editor.wordWrap": "on",
+  "workbench.editor.highlightModifiedTabs": true,
+  "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+}
