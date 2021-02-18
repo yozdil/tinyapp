@@ -1,5 +1,5 @@
 const PORT = 8080;
-// Helper Functions
+// HELPER FUNCS
 const {
   generateRandomString,
   message,
@@ -23,7 +23,7 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
-// DATABASE OF URLs and USERID
+// DATABASE OF URLS and USERID
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "BBB456" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "AAA123" },
@@ -68,7 +68,7 @@ app.post("/register", (req, res) => {
   }
 });
 
-// LOGIN
+// LOGIN & LOGOUT
 app.get("/login", (req, res) => {
   const templateVars = { user: users[req.session.user_id], urls: urlDatabase };
   res.render("login", templateVars);
@@ -83,7 +83,6 @@ app.post("/login", (req, res) => {
     res.status(403).render("403", message(error));
   }
 });
-// LOGOUT
 app.post("/logout", (req, res) => {
   req.session = null; // To destroy the current session
   res.redirect("/urls");
@@ -99,8 +98,7 @@ app.get("/urls", (req, res) => {
     res.render("urls_index", templateVars);
   }
 });
-
-// GET /urls/new route
+// CREATE A NEW URL PAGE
 app.get("/urls/new", (req, res) => {
   const id = req.session.user_id;
   if (!id) {
@@ -110,8 +108,7 @@ app.get("/urls/new", (req, res) => {
     res.render("urls_new", templateVars);
   }
 });
-
-// Redirection to the webpage
+// VISIT THE WEBPAGE VIA SHORTURL
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL].longURL;
   if (longURL === undefined) {
@@ -119,8 +116,7 @@ app.get("/u/:shortURL", (req, res) => {
   }
   res.redirect(longURL);
 });
-
-// GET /urls/:id route
+// INFO PAGE OF THE SHORTURL (LONGURL EDIT PAGE)
 app.get("/urls/:shortURL", (req, res) => {
   const id = req.session.user_id;
   let { shortURL } = req.params;
@@ -145,19 +141,15 @@ app.get("/urls/:shortURL", (req, res) => {
     }
   }
 });
-
-// Creation of a new key for a given address.
+// GENERATING A NEW SHORTURL FOR A NEW WEBSITE
 app.post("/urls", (req, res) => {
   const userID = req.session.user_id;
   let sURL = generateRandomString();
   let { longURL } = req.body;
-
   urlDatabase[sURL] = { longURL, userID };
-
-  res.redirect(`/urls/`); // Redirect to the created short URL.
+  res.redirect(`/urls/${sURL}`); // Redirect to the created short URL.
 });
-
-// Submit an Edit of long url for the same short url
+// SUBMITTING AN EDIT OF LONGURL
 app.post("/urls/:shortURL", (req, res) => {
   const userID = req.session.user_id;
   const shortURL = req.params.shortURL;
@@ -171,7 +163,7 @@ app.post("/urls/:shortURL", (req, res) => {
   }
 });
 
-// Deletion for a given key address.
+// SHORT URL DELETE
 app.post("/urls/:shortURL/delete", (req, res) => {
   const id = req.session.user_id;
   if (id) {
@@ -182,11 +174,12 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   res.redirect("/urls");
 });
 
-// For invalid URLs render the error page (404.ejs)
+// INVALID PATH
 app.get("*", (req, res) => {
-  // display 404
   res.status(404).render("404");
 });
+
+// ON SERVER CREATION
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
