@@ -21,7 +21,7 @@ app.use(
 );
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
-app.set("view engine", "ejs");
+app.set("view engine", "ejs"); //EJS for page rendering
 
 // DATABASE OF URLS and USERID
 const urlDatabase = {
@@ -62,7 +62,7 @@ app.post("/register", (req, res) => {
         .render("400", message("This email already exists in our system!"));
     }
   } else {
-    res
+    res //if no info is submitted for registration
       .status(400)
       .render("400", message("Please provide and email and a password!"));
   }
@@ -91,7 +91,7 @@ app.post("/logout", (req, res) => {
 // URLS
 app.get("/urls", (req, res) => {
   const id = req.session.user_id;
-  if (!id) {
+  if (!id) { //If there is no login always redirect to the login page. Same logic applies for other pages.
     res.redirect("/login");
   } else {
     const templateVars = { user: users[id], urls: isUser(urlDatabase, id) };
@@ -110,11 +110,13 @@ app.get("/urls/new", (req, res) => {
 });
 // VISIT THE WEBPAGE VIA SHORTURL
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL].longURL;
-  if (longURL === undefined) {
-    res.status(404).render("404");
+  if (urlDatabase[req.params.shortURL] === undefined) {
+    res.status(404).render("404"); //if URL for the given ID does not exist
+  } else {
+    const longURL = urlDatabase[req.params.shortURL].longURL;
+    res.redirect(longURL);
   }
-  res.redirect(longURL);
+
 });
 // INFO PAGE OF THE SHORTURL (LONGURL EDIT PAGE)
 app.get("/urls/:shortURL", (req, res) => {
@@ -166,7 +168,7 @@ app.post("/urls/:shortURL", (req, res) => {
 // SHORT URL DELETE
 app.post("/urls/:shortURL/delete", (req, res) => {
   const id = req.session.user_id;
-  if (id) {
+  if (id) { //For a valid ID
     delete urlDatabase[req.params.shortURL];
   } else {
     res.status(403).render("403", message("You cannot edit this page!"));
