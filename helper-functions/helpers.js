@@ -10,7 +10,7 @@ const generateRandomString = () => {
   }
   return rand;
 };
-
+// Turn a string to object(EJS rendering purposes)
 const message = (str) => {
   return { message: str };
 };
@@ -36,7 +36,7 @@ const createUser = (userInfo, data) => {
   const { email, password } = userInfo;
   const { user, error } = validate(email, password, data);
   if (error === "email") {
-    // email doesn't exist on the database
+    // email doesn't exist on the database, so create.
     let userId = generateRandomString();
     userInfo.id = userId;
     data[userId] = userInfo;
@@ -44,6 +44,7 @@ const createUser = (userInfo, data) => {
   } else null;
 };
 
+// Validates the ID for any action that will be performed on the TinyApp
 const isUser = (db, id) => {
   let newDB = {};
   for (const key in db) {
