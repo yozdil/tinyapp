@@ -21,6 +21,12 @@ const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
 };
+
+// const urlDatabase = {
+//   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+//   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+// };
+
 const users = {
   userRandomID: {
     id: "userRandomID",
@@ -87,27 +93,30 @@ app.post("/logout", (req, res) => {
 
 // URLS
 app.get("/urls", (req, res) => {
-  if (!req.cookies.id) {
+  const id = req.cookies.id
+  if (!id) {
     res.redirect("/login");
   } else {
-    const templateVars = { user: users[req.cookies.id], urls: urlDatabase };
+    const templateVars = { user: users[id], urls: urlDatabase };
     res.render("urls_index", templateVars);
   }
 });
 
 // GET /urls/new route
 app.get("/urls/new", (req, res) => {
-  if (!req.cookies.id) {
+  const id = req.cookies.id
+  if (!id) {
     res.redirect("/login");
   } else {
-    const templateVars = { user: users[req.cookies.id], urls: urlDatabase };
+    const templateVars = { user: users[id], urls: urlDatabase };
     res.render("urls_new", templateVars);
   }
 });
 
 // Redirection to the webpage
 app.get("/u/:shortURL", (req, res) => {
-  if (!req.cookies.id) {
+  const id = req.cookies.id
+  if (!id) {
     res.redirect("/login");
   } else {
     const longURL = urlDatabase[req.params.shortURL];
@@ -120,11 +129,12 @@ app.get("/u/:shortURL", (req, res) => {
 
 // GET /urls/:id route
 app.get("/urls/:shortURL", (req, res) => {
-  if (!req.cookies.id) {
+  const id = req.cookies.id
+  if (!id) {
     res.redirect("/login");
   } else {
     const templateVars = {
-      user: users[req.cookies.id],
+      user: users[id],
       shortURL: req.params.shortURL,
       longURL: urlDatabase[req.params.shortURL],
     };
