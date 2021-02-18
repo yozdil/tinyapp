@@ -10,8 +10,8 @@ const generateRandomString = () => {
 };
 
 const message = (str) => {
-  return {"message": str };
-}
+  return { message: str };
+};
 
 const validate = (email, password, data) => {
   let userArr = Object.values(data);
