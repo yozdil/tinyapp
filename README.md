@@ -4,9 +4,10 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["screenshot description"](https://github.com/yozdil/tinyapp/blob/features/style/docs/login.png)
-!["screenshot description"](https://github.com/yozdil/tinyapp/blob/features/style/docs/urls-page.png)
-!["screenshot description"](https://github.com/yozdil/tinyapp/blob/features/style/docs/url-edit.png)
+!["The login page"](https://github.com/yozdil/tinyapp/blob/features/style/docs/login.png)
+!["The mobile login page"](https://github.com/yozdil/tinyapp/blob/master/docs/mobile-login.png)
+!["The URLs page"](https://github.com/yozdil/tinyapp/blob/features/style/docs/urls-page.png)
+!["Editing a URL"](https://github.com/yozdil/tinyapp/blob/features/style/docs/url-edit.png)
 
 ## Dependencies
 
