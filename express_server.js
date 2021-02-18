@@ -91,7 +91,8 @@ app.post("/logout", (req, res) => {
 // URLS
 app.get("/urls", (req, res) => {
   const id = req.session.user_id;
-  if (!id) { //If there is no login always redirect to the login page. Same logic applies for other pages.
+  if (!id) {
+    //If there is no login always redirect to the login page. Same logic applies for other pages.
     res.redirect("/login");
   } else {
     const templateVars = { user: users[id], urls: isUser(urlDatabase, id) };
@@ -116,7 +117,6 @@ app.get("/u/:shortURL", (req, res) => {
     const longURL = urlDatabase[req.params.shortURL].longURL;
     res.redirect(longURL);
   }
-
 });
 // INFO PAGE OF THE SHORTURL (LONGURL EDIT PAGE)
 app.get("/urls/:shortURL", (req, res) => {
@@ -168,7 +168,8 @@ app.post("/urls/:shortURL", (req, res) => {
 // SHORT URL DELETE
 app.post("/urls/:shortURL/delete", (req, res) => {
   const id = req.session.user_id;
-  if (id) { //For a valid ID
+  if (id) {
+    //For a valid ID
     delete urlDatabase[req.params.shortURL];
   } else {
     res.status(403).render("403", message("You cannot edit this page!"));
