@@ -5,6 +5,7 @@ const {
   message,
   validate,
   createUser,
+  isUser,
 } = require("./helper-functions/helpers");
 const express = require("express");
 const app = express();
@@ -17,15 +18,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
 // DATABASE OF URLs and USERS
-const urlDatabase = {
-  b2xVn2: "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com",
-};
-
 // const urlDatabase = {
-//   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-//   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+//   b2xVn2: "http://www.lighthouselabs.ca",
+//   "9sm5xK": "http://www.google.com",
 // };
+
+const urlDatabase = {
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "AAA123" },
+};
 
 const users = {
   userRandomID: {
@@ -93,72 +94,91 @@ app.post("/logout", (req, res) => {
 
 // URLS
 app.get("/urls", (req, res) => {
-  const id = req.cookies.id
+  const id = req.cookies.id;
   if (!id) {
     res.redirect("/login");
   } else {
-    const templateVars = { user: users[id], urls: urlDatabase };
+    const templateVars = { user: users[id], urls: isUser(urlDatabase, id) };
     res.render("urls_index", templateVars);
   }
 });
 
 // GET /urls/new route
 app.get("/urls/new", (req, res) => {
-  const id = req.cookies.id
+  const id = req.cookies.id;
   if (!id) {
     res.redirect("/login");
   } else {
-    const templateVars = { user: users[id], urls: urlDatabase };
+    const templateVars = { user: users[id], urls: isUser(urlDatabase, id) };
     res.render("urls_new", templateVars);
   }
 });
 
 // Redirection to the webpage
 app.get("/u/:shortURL", (req, res) => {
-  const id = req.cookies.id
-  if (!id) {
-    res.redirect("/login");
-  } else {
-    const longURL = urlDatabase[req.params.shortURL];
-    if (longURL === undefined) {
-      res.status(404).render("404");
-    }
-    res.redirect(longURL);
+  const longURL = urlDatabase[req.params.shortURL].longURL;
+  if (longURL === undefined) {
+    res.status(404).render("404");
   }
+  res.redirect(longURL);
 });
 
 // GET /urls/:id route
 app.get("/urls/:shortURL", (req, res) => {
-  const id = req.cookies.id
-  if (!id) {
-    res.redirect("/login");
+  const id = req.cookies.id;
+  let { shortURL } = req.params;
+
+  if (urlDatabase[shortURL].userID !== id) {
+    //If another user tries to visit the given shortURL
+    res.status(403).render("403", message("You cannot edit this page!"));
   } else {
-    const templateVars = {
-      user: users[id],
-      shortURL: req.params.shortURL,
-      longURL: urlDatabase[req.params.shortURL],
-    };
-    res.render("urls_show", templateVars);
+    const user = id ? users[id] : null;
+    if (user && urlDatabase[shortURL].longURL) {
+      const templateVars = {
+        user,
+        shortURL,
+        longURL: urlDatabase[shortURL].longURL,
+      };
+      res.render("urls_show", templateVars);
+    } else {
+      res.status(404).render("404");
+    }
   }
 });
 
 // Creation of a new key for a given address.
 app.post("/urls", (req, res) => {
+  const userID = req.cookies.id;
   let sURL = generateRandomString();
-  urlDatabase[sURL] = req.body.longURL; //Save body-parser value to urlDatabase
+  let { longURL } = req.body;
+
+  urlDatabase[sURL] = { longURL, userID };
+
   res.redirect(`/urls/${sURL}`); // Redirect to the created short URL.
 });
 
 // Submit an Edit of long url for the same short url
 app.post("/urls/:shortURL", (req, res) => {
-  let shortURL = req.params.shortURL;
-  urlDatabase[shortURL] = req.body.longURL;
-  res.redirect(`/urls/${shortURL}`);
+  const userID = req.cookies.id;
+  const shortURL = req.params.shortURL;
+  let userDB = isUser(urlDatabase, userID);
+
+  if (userDB[shortURL]) {
+    urlDatabase[shortURL].longURL = req.body.longURL;
+    res.redirect(`/urls/${shortURL}`);
+  } else {
+    res.status(403).render("403", message("You cannot edit this page!"));
+  }
 });
 
 // Deletion for a given key address.
 app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL];
+  const id = req.cookies.id;
+  if (id) {
+    delete urlDatabase[req.params.shortURL];
+  } else {
+    res.status(403).render("403", message("You cannot edit this page!"));
+  }
   res.redirect("/urls");
 });
 
