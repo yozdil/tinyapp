@@ -159,7 +159,7 @@ app.post("/urls/:shortURL", (req, res) => {
 
   if (userDB[shortURL]) {
     urlDatabase[shortURL].longURL = req.body.longURL;
-    res.redirect(`/urls/${shortURL}`);
+    res.redirect(`/urls/`);
   } else {
     res.status(403).render("403", message("You cannot edit this page!"));
   }
