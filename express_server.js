@@ -20,25 +20,20 @@ app.set("view engine", "ejs");
 
 // DATABASE OF URLs and USERID
 const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "BBB456" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "AAA123" },
 };
 
 const users = {
-  userRandomID: {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: "purple-monkey-dinosaur",
-  },
-  user2RandomID: {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk",
+  BBB456: {
+    id: "BBB456",
+    email: "yamac.ozdil@gmail.com",
+    password: "$2b$10$Ojyazxj0Lg3uXTttzUXvqe6F72x9ikeJnXIjIGFbsS2cOZIL1ATpS", //qwe
   },
   AAA123: {
     id: "AAA123",
-    email: "yamac.ozdil@gmail.com",
-    password: "123",
+    email: "yamac.ozdil@yahoo.ca",
+    password: "$2b$10$4C/EVYjW55QnVZhpZqSp5ux8afrrH2hvi25k3YxCJ.amOjsApY2/y", //123
   },
 };
 
@@ -50,7 +45,7 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   let { email, password } = req.body;
 
-  // password = bcrypt.hashSync(password, 10); //password hash
+  password = bcrypt.hashSync(password, 10); //password hash
 
     if (email) {
     //If email is provided, we have to verify if it exists on the database.
@@ -77,9 +72,6 @@ app.get("/login", (req, res) => {
 });
 app.post("/login", (req, res) => {
   let { email, password } = req.body;
-
-  // bcrypt.compareSync("purple-monkey-dinosaur", hashedPassword);
-
   const { user, error } = validate(email, password, users);
   if (user) {
     res.cookie("id", user.id);
