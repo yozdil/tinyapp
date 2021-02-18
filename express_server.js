@@ -85,7 +85,7 @@ app.post("/login", (req, res) => {
 });
 // LOGOUT
 app.post("/logout", (req, res) => {
-  req.session = null; // To destroy the current session 
+  req.session = null; // To destroy the current session
   res.redirect("/urls");
 });
 
