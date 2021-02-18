@@ -44,12 +44,17 @@ const createUser = (userInfo, data) => {
 
 const isUser = (db, id) => {
   let newDB = {};
-for (const key in db) {
-  if (db[key].userID === id) {
-    newDB[key] =  db[key];
+  for (const key in db) {
+    if (db[key].userID === id) {
+      newDB[key] = db[key];
+    }
   }
-}
-return newDB;
-  
-}
-module.exports = { generateRandomString, message, validate, createUser, isUser };
+  return newDB;
+};
+module.exports = {
+  generateRandomString,
+  message,
+  validate,
+  createUser,
+  isUser,
+};
