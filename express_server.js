@@ -127,21 +127,24 @@ app.get("/u/:shortURL", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   const id = req.cookies.id;
   let { shortURL } = req.params;
-
-  if (urlDatabase[shortURL].userID !== id) {
-    //If another user tries to visit the given shortURL
-    res.status(403).render("403", message("You cannot edit this page!"));
+  if (urlDatabase[shortURL] === undefined) {
+    res.status(404).render("404");
   } else {
-    const user = id ? users[id] : null;
-    if (user && urlDatabase[shortURL].longURL) {
-      const templateVars = {
-        user,
-        shortURL,
-        longURL: urlDatabase[shortURL].longURL,
-      };
-      res.render("urls_show", templateVars);
+    if (urlDatabase[shortURL].userID !== id) {
+      //If another user tries to visit the given shortURL
+      res.status(403).render("403", message("You cannot edit this page!"));
     } else {
-      res.status(404).render("404");
+      const user = id ? users[id] : null;
+      if (user && urlDatabase[shortURL].longURL) {
+        const templateVars = {
+          user,
+          shortURL,
+          longURL: urlDatabase[shortURL].longURL,
+        };
+        res.render("urls_show", templateVars);
+      } else {
+        res.status(404).render("404");
+      }
     }
   }
 });
