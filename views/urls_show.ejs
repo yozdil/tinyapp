@@ -26,7 +26,7 @@
       <h3 class="text-muted"><strong>Edit</strong></h3>
       <form class="form-inline justify-content-center" action="/urls/<%= shortURL %>" method="POST">
         <label class="text-muted" for="longURL">New URL:</label>
-        <input class="form-control" type="text" name="longURL" value="<%= longURL %>" placeholder="http://"
+        <input class="form-control" type="url" name="longURL" value="<%= longURL %>" placeholder="http://" required
           style="width: 300px; margin: 3em" />
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
