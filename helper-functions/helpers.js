@@ -1,3 +1,5 @@
+const bcrypt = require("bcrypt");
+
 // Random short url generator to be used by long url
 const generateRandomString = () => {
   let rand = "";
@@ -17,7 +19,7 @@ const validate = (email, password, data) => {
   let userArr = Object.values(data);
   const currentUser = userArr.find((user) => user.email === email);
   if (currentUser) {
-    if (currentUser.password === password) {
+    if (bcrypt.compareSync(password, currentUser.password)) {
       // successful login
       return { user: currentUser, error: null };
     } else {
