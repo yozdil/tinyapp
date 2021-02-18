@@ -7,25 +7,20 @@ const {
   createUser,
   isUser,
 } = require("./helper-functions/helpers");
+
 const express = require("express");
 const app = express();
-const bcrypt = require('bcrypt');
-// To make buffer data readable
-const cookieSession = require('cookie-session');
-app.use(cookieSession({
-  name: 'session',
-  keys: ['tiny'],
-}));
-
-// DELETE THIS OUT AFTER IMPLEMENTING COOKIE SESSION
-const cookieParser = require("cookie-parser");
-app.use(cookieParser());
-// 
-
-
+// MIDDLEWARES
+const bcrypt = require("bcrypt");
+const cookieSession = require("cookie-session");
+app.use(
+  cookieSession({
+    name: "session",
+    keys: ["tiny"],
+  })
+);
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
-// EJS
 app.set("view engine", "ejs");
 
 // DATABASE OF URLs and USERID
@@ -49,19 +44,17 @@ const users = {
 
 // REGISTRATION
 app.get("/register", (req, res) => {
-  const templateVars = { user: users[req.cookies.id], urls: urlDatabase };
+  const templateVars = { user: users[req.session.user_id], urls: urlDatabase };
   res.render("registration", templateVars);
 });
 app.post("/register", (req, res) => {
   let { email, password } = req.body;
-
   password = bcrypt.hashSync(password, 10); //password hash
-
-    if (email) {
+  if (email) {
     //If email is provided, we have to verify if it exists on the database.
     const userId = createUser({ email, password }, users);
     if (userId) {
-      res.cookie("id", userId);
+      req.session.user_id = userId;
       res.redirect("/urls");
     } else {
       res
@@ -77,14 +70,14 @@ app.post("/register", (req, res) => {
 
 // LOGIN
 app.get("/login", (req, res) => {
-  const templateVars = { user: users[req.cookies.id], urls: urlDatabase };
+  const templateVars = { user: users[req.session.user_id], urls: urlDatabase };
   res.render("login", templateVars);
 });
 app.post("/login", (req, res) => {
   let { email, password } = req.body;
   const { user, error } = validate(email, password, users);
   if (user) {
-    res.cookie("id", user.id);
+    req.session.user_id = user.id;
     res.redirect("/urls");
   } else {
     res.status(403).render("403", message(error));
@@ -92,13 +85,13 @@ app.post("/login", (req, res) => {
 });
 // LOGOUT
 app.post("/logout", (req, res) => {
-  res.clearCookie("id");
+  req.session = null; // To destroy the current session 
   res.redirect("/urls");
 });
 
 // URLS
 app.get("/urls", (req, res) => {
-  const id = req.cookies.id;
+  const id = req.session.user_id;
   if (!id) {
     res.redirect("/login");
   } else {
@@ -109,7 +102,7 @@ app.get("/urls", (req, res) => {
 
 // GET /urls/new route
 app.get("/urls/new", (req, res) => {
-  const id = req.cookies.id;
+  const id = req.session.user_id;
   if (!id) {
     res.redirect("/login");
   } else {
@@ -129,7 +122,7 @@ app.get("/u/:shortURL", (req, res) => {
 
 // GET /urls/:id route
 app.get("/urls/:shortURL", (req, res) => {
-  const id = req.cookies.id;
+  const id = req.session.user_id;
   let { shortURL } = req.params;
   if (urlDatabase[shortURL] === undefined) {
     res.status(404).render("404");
@@ -155,7 +148,7 @@ app.get("/urls/:shortURL", (req, res) => {
 
 // Creation of a new key for a given address.
 app.post("/urls", (req, res) => {
-  const userID = req.cookies.id;
+  const userID = req.session.user_id;
   let sURL = generateRandomString();
   let { longURL } = req.body;
 
@@ -166,7 +159,7 @@ app.post("/urls", (req, res) => {
 
 // Submit an Edit of long url for the same short url
 app.post("/urls/:shortURL", (req, res) => {
-  const userID = req.cookies.id;
+  const userID = req.session.user_id;
   const shortURL = req.params.shortURL;
   let userDB = isUser(urlDatabase, userID);
 
@@ -180,7 +173,7 @@ app.post("/urls/:shortURL", (req, res) => {
 
 // Deletion for a given key address.
 app.post("/urls/:shortURL/delete", (req, res) => {
-  const id = req.cookies.id;
+  const id = req.session.user_id;
   if (id) {
     delete urlDatabase[req.params.shortURL];
   } else {
