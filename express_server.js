@@ -9,6 +9,7 @@ const {
 } = require("./helper-functions/helpers");
 const express = require("express");
 const app = express();
+const bcrypt = require('bcrypt');
 // To make buffer data readable
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
@@ -17,12 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // EJS
 app.set("view engine", "ejs");
 
-// DATABASE OF URLs and USERS
-// const urlDatabase = {
-//   b2xVn2: "http://www.lighthouselabs.ca",
-//   "9sm5xK": "http://www.google.com",
-// };
-
+// DATABASE OF URLs and USERID
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "AAA123" },
@@ -52,8 +48,11 @@ app.get("/register", (req, res) => {
   res.render("registration", templateVars);
 });
 app.post("/register", (req, res) => {
-  const { email, password } = req.body;
-  if (email) {
+  let { email, password } = req.body;
+
+  // password = bcrypt.hashSync(password, 10); //password hash
+
+    if (email) {
     //If email is provided, we have to verify if it exists on the database.
     const userId = createUser({ email, password }, users);
     if (userId) {
@@ -77,7 +76,10 @@ app.get("/login", (req, res) => {
   res.render("login", templateVars);
 });
 app.post("/login", (req, res) => {
-  const { email, password } = req.body;
+  let { email, password } = req.body;
+
+  // bcrypt.compareSync("purple-monkey-dinosaur", hashedPassword);
+
   const { user, error } = validate(email, password, users);
   if (user) {
     res.cookie("id", user.id);
