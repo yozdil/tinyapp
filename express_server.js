@@ -32,27 +32,31 @@ const users = {
     email: "user2@example.com",
     password: "dishwasher-funk",
   },
+  AAA123: {
+    id: "AAA123",
+    email: "yamac.ozdil@gmail.com",
+    password: "123",
+  },
 };
 
 // URLS
 app.get("/urls", (req, res) => {
-  const templateVars = { email: req.cookies["email"], urls: urlDatabase };
+  const templateVars = { user: users[req.cookies.id], urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
 // REGISTRATION
 app.get("/register", (req, res) => {
-  const templateVars = { email: req.cookies["email"], urls: urlDatabase };
+  const templateVars = { user: users[req.cookies.id], urls: urlDatabase };
   res.render("registration", templateVars);
 });
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
   if (email) {
-    //If email is provided, later we have to verify if it exists on the database.
-    // if it exists
-    let userEmail = createUser({ email, password }, users);
-    if (userEmail) {
-      res.cookie("email", email);
+    //If email is provided, we have to verify if it exists on the database.
+    const userId = createUser({ email, password }, users);
+    if (userId) {
+      res.cookie("id", userId);
       res.redirect("/urls");
     } else {
       res
@@ -68,25 +72,32 @@ app.post("/register", (req, res) => {
 
 // LOGIN & LOGOUT
 app.get("/login", (req, res) => {
-  const templateVars = { email: req.cookies["email"], urls: urlDatabase };
+  const templateVars = { user: users[req.cookies.id], urls: urlDatabase };
   res.render("login", templateVars);
 });
 app.post("/login", (req, res) => {
-  res.cookie("email", req.body.email);
-  res.redirect("/urls");
+  const { email, password } = req.body;
+  const { user, error } = validate(email, password, users);
+  if (user) {
+    res.cookie("id", user.id);
+    res.redirect("/urls");
+  } else {
+    res.status(403).render("403", message(error));
+  }
 });
 // LOGOUT
 app.post("/logout", (req, res) => {
-  res.clearCookie("email", req.body.email);
+  // 5 Modify the logout endpoint to clear the correct user_id cookie instead of
+  // the username one.
+
+  res.clearCookie("id");
   // console.log(req.body.username); //This is to display the username provided
   res.redirect("/urls");
 });
 
-
-
 // GET /urls/new route
 app.get("/urls/new", (req, res) => {
-  const templateVars = { email: req.cookies["email"], urls: urlDatabase };
+  const templateVars = { user: users[req.cookies.id], urls: urlDatabase };
   res.render("urls_new", templateVars);
 });
 
@@ -102,7 +113,7 @@ app.get("/u/:shortURL", (req, res) => {
 // GET /urls/:id route
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
-    email: req.cookies["email"],
+    user: users[req.cookies.id],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
   };
