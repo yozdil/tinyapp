@@ -39,12 +39,6 @@ const users = {
   },
 };
 
-// URLS
-app.get("/urls", (req, res) => {
-  const templateVars = { user: users[req.cookies.id], urls: urlDatabase };
-  res.render("urls_index", templateVars);
-});
-
 // REGISTRATION
 app.get("/register", (req, res) => {
   const templateVars = { user: users[req.cookies.id], urls: urlDatabase };
@@ -70,7 +64,7 @@ app.post("/register", (req, res) => {
   }
 });
 
-// LOGIN & LOGOUT
+// LOGIN
 app.get("/login", (req, res) => {
   const templateVars = { user: users[req.cookies.id], urls: urlDatabase };
   res.render("login", templateVars);
@@ -87,12 +81,14 @@ app.post("/login", (req, res) => {
 });
 // LOGOUT
 app.post("/logout", (req, res) => {
-  // 5 Modify the logout endpoint to clear the correct user_id cookie instead of
-  // the username one.
-
   res.clearCookie("id");
-  // console.log(req.body.username); //This is to display the username provided
   res.redirect("/urls");
+});
+
+// URLS
+app.get("/urls", (req, res) => {
+  const templateVars = { user: users[req.cookies.id], urls: urlDatabase };
+  res.render("urls_index", templateVars);
 });
 
 // GET /urls/new route
@@ -148,8 +144,3 @@ app.get("*", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
-// // JSON
-// app.get("/urls.json", (req, res) => {
-//   res.json(urlDatabase);
-// });
