@@ -36,11 +36,9 @@ const createUser = (userInfo, data) => {
   if (error === "email") {
     // email doesn't exist on the database
     let userId = generateRandomString();
-
     userInfo.id = userId;
     data[userId] = userInfo;
-
-    return email;
+    return userId;
   } else null;
 };
 
