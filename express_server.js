@@ -87,33 +87,49 @@ app.post("/logout", (req, res) => {
 
 // URLS
 app.get("/urls", (req, res) => {
-  const templateVars = { user: users[req.cookies.id], urls: urlDatabase };
-  res.render("urls_index", templateVars);
+  if (!req.cookies.id) {
+    res.redirect("/login");
+  } else {
+    const templateVars = { user: users[req.cookies.id], urls: urlDatabase };
+    res.render("urls_index", templateVars);
+  }
 });
 
 // GET /urls/new route
 app.get("/urls/new", (req, res) => {
-  const templateVars = { user: users[req.cookies.id], urls: urlDatabase };
-  res.render("urls_new", templateVars);
+  if (!req.cookies.id) {
+    res.redirect("/login");
+  } else {
+    const templateVars = { user: users[req.cookies.id], urls: urlDatabase };
+    res.render("urls_new", templateVars);
+  }
 });
 
 // Redirection to the webpage
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
-  if (longURL === undefined) {
-    res.status(404).render("404");
+  if (!req.cookies.id) {
+    res.redirect("/login");
+  } else {
+    const longURL = urlDatabase[req.params.shortURL];
+    if (longURL === undefined) {
+      res.status(404).render("404");
+    }
+    res.redirect(longURL);
   }
-  res.redirect(longURL);
 });
 
 // GET /urls/:id route
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = {
-    user: users[req.cookies.id],
-    shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL],
-  };
-  res.render("urls_show", templateVars);
+  if (!req.cookies.id) {
+    res.redirect("/login");
+  } else {
+    const templateVars = {
+      user: users[req.cookies.id],
+      shortURL: req.params.shortURL,
+      longURL: urlDatabase[req.params.shortURL],
+    };
+    res.render("urls_show", templateVars);
+  }
 });
 
 // Creation of a new key for a given address.
