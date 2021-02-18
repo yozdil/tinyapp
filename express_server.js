@@ -11,8 +11,22 @@ const express = require("express");
 const app = express();
 const bcrypt = require('bcrypt');
 // To make buffer data readable
-const cookieParser = require("cookie-parser");
-app.use(cookieParser());
+const cookieSession = require('cookie-session');
+
+
+app.use(cookieSession({
+  name: 'session',
+  keys: [/* secret keys */],
+
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}));
+
+// const cookieParser = require("cookie-parser");
+// app.use(cookieParser());
+
+
+
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 // EJS
