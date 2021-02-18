@@ -12,19 +12,15 @@ const app = express();
 const bcrypt = require('bcrypt');
 // To make buffer data readable
 const cookieSession = require('cookie-session');
-
-
 app.use(cookieSession({
   name: 'session',
-  keys: [/* secret keys */],
-
-  // Cookie Options
-  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  keys: ['tiny'],
 }));
 
-// const cookieParser = require("cookie-parser");
-// app.use(cookieParser());
-
+// DELETE THIS OUT AFTER IMPLEMENTING COOKIE SESSION
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+// 
 
 
 const bodyParser = require("body-parser");
@@ -165,7 +161,7 @@ app.post("/urls", (req, res) => {
 
   urlDatabase[sURL] = { longURL, userID };
 
-  res.redirect(`/urls/${sURL}`); // Redirect to the created short URL.
+  res.redirect(`/urls/`); // Redirect to the created short URL.
 });
 
 // Submit an Edit of long url for the same short url
