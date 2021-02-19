@@ -87,6 +87,10 @@ app.post("/logout", (req, res) => {
   req.session = null; // To destroy the current session
   res.redirect("/urls");
 });
+// HOME
+app.get("/", (req, res) => {
+res.redirect('/urls')
+});
 
 // URLS
 app.get("/urls", (req, res) => {
